@@ -917,7 +917,7 @@
         <h3>Saving</h3>
         <ol>
           <li>Create a Blueprint derived from <strong>SaveGame</strong>. For Per Player progress, add a variable named <code>DialogueProgress</code>, set its type to <strong>Dialogue Speaker Progress Record</strong>, and change it to an <strong>Array</strong>. For Shared progress, add speaker-state variables keyed by stable speaker IDs.</li>
-          <li>For <strong>Shared</strong> progress, save each relevant speaker component's <strong>Persistent State</strong>. Restore it on the server, then call <strong>Apply Persistent Dialogue Override</strong> if the component has already begun play.</li>
+          <li>For <strong>Shared</strong> progress, save each relevant speaker component's <strong>Persistent State</strong>. Close its conversation before restoring. On the server, restore the saved state, call <strong>Set Current Dialogue</strong> with <strong>New Dialogue</strong> left empty, then call <strong>Apply Persistent Dialogue Override</strong>. This resets an empty saved override to <strong>Default Dialogue</strong> and applies a valid saved tree. Start the next conversation after these steps.</li>
           <li>For <strong>Per Player</strong> progress, on the server call <strong>Export Progress</strong> on that player's Dialogue Participant. Connect the returned array to <strong>Set DialogueProgress</strong> on your SaveGame object, then use your game's <strong>Save Game to Slot</strong> flow for that player.</li>
           <li>After <strong>Load Game from Slot</strong>, cast the loaded object to your SaveGame Blueprint. On the server, connect its <strong>DialogueProgress</strong> array to <strong>Import Progress</strong> on the participant belonging to the same player. Use a <strong>Branch</strong> on the returned Boolean: start dialogue only after a successful restore, and handle failure in your save flow. Import is rejected while that participant has an active conversation or state provider.</li>
           <li>Resolve versioning in your save model when renaming stat IDs, counter IDs, tag IDs, speaker IDs, tree assets, or released dialogue options.</li>
@@ -1090,7 +1090,7 @@
 
         <details>
           <summary>Saved choices or a dialogue override did not return</summary>
-          <p>Check which progress mode the target uses. Shared mode restores the speaker's Persistent State; Per Player mode restores Export Progress records through the player's server-side Dialogue Participant. Use the same stable Speaker IDs and check Import Progress's result. Restore before starting a conversation.</p>
+          <p>Check which progress mode the target uses. Shared mode restores the speaker's Persistent State, then calls Set Current Dialogue with an empty New Dialogue input before Apply Persistent Dialogue Override. A saved tree reference must still resolve to a cooked asset. Per Player mode restores Export Progress records through the player's server-side Dialogue Participant. Use the same stable Speaker IDs and check Import Progress's result. Restore before starting a conversation.</p>
         </details>
 
         <details>

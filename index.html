@@ -1,0 +1,1137 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Dialogue 1.0 User Guide</title>
+  <style>
+    :root {
+      --ink: #18202a;
+      --muted: #556170;
+      --paper: #f5f7fa;
+      --surface: #ffffff;
+      --surface-alt: #eef2f7;
+      --line: #d7dee8;
+      --brand: #6b3fc4;
+      --brand-dark: #4d289a;
+      --accent: #009a8b;
+      --code: #17202b;
+      --code-ink: #edf5ff;
+      --warning-bg: #fff7df;
+      --warning-line: #b67b00;
+      --info-bg: #eaf7f5;
+      --info-line: #087d72;
+      --shadow: 0 12px 32px rgba(24, 32, 42, 0.08);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --ink: #e8edf5;
+        --muted: #b6c0ce;
+        --paper: #0e131a;
+        --surface: #171e27;
+        --surface-alt: #202936;
+        --line: #364252;
+        --brand: #b698ff;
+        --brand-dark: #d0beff;
+        --accent: #55d8c8;
+        --code: #080c12;
+        --code-ink: #edf5ff;
+        --warning-bg: #332910;
+        --warning-line: #d69c29;
+        --info-bg: #112d2a;
+        --info-line: #43c8b8;
+        --shadow: none;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      line-height: 1.65;
+    }
+
+    a {
+      color: var(--brand-dark);
+      text-underline-offset: 0.18em;
+    }
+
+    a:hover {
+      text-decoration-thickness: 0.15em;
+    }
+
+    a:focus-visible,
+    button:focus-visible,
+    summary:focus-visible {
+      outline: 3px solid var(--accent);
+      outline-offset: 3px;
+      border-radius: 0.2rem;
+    }
+
+    .skip-link {
+      position: absolute;
+      top: -5rem;
+      left: 1rem;
+      z-index: 10;
+      padding: 0.7rem 1rem;
+      color: #fff;
+      background: #111;
+      border-radius: 0.4rem;
+    }
+
+    .skip-link:focus {
+      top: 1rem;
+    }
+
+    .hero {
+      color: #fff;
+      background:
+        radial-gradient(circle at 86% 12%, rgba(83, 221, 203, 0.35), transparent 26rem),
+        linear-gradient(135deg, #38206e 0%, #6b3fc4 57%, #087f75 140%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.22);
+    }
+
+    .hero-inner,
+    .page {
+      width: min(1180px, calc(100% - 2rem));
+      margin: 0 auto;
+    }
+
+    .hero-inner {
+      padding: 3.75rem 0 3rem;
+    }
+
+    .eyebrow {
+      margin: 0 0 0.35rem;
+      font-size: 0.78rem;
+      font-weight: 750;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      opacity: 0.85;
+    }
+
+    h1 {
+      max-width: 14ch;
+      margin: 0;
+      font-size: clamp(2.45rem, 7vw, 5rem);
+      line-height: 0.98;
+      letter-spacing: -0.045em;
+    }
+
+    .lede {
+      max-width: 65ch;
+      margin: 1.3rem 0 0;
+      font-size: clamp(1.05rem, 2.2vw, 1.3rem);
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .version-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem;
+      margin-top: 1.45rem;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 2rem;
+      padding: 0.25rem 0.75rem;
+      color: #fff;
+      background: rgba(10, 9, 26, 0.27);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      border-radius: 999px;
+      font-size: 0.86rem;
+      font-weight: 650;
+    }
+
+    .page {
+      display: grid;
+      grid-template-columns: 16rem minmax(0, 1fr);
+      gap: 2.25rem;
+      padding: 2rem 0 5rem;
+    }
+
+    .toc {
+      position: sticky;
+      top: 1rem;
+      align-self: start;
+      max-height: calc(100vh - 2rem);
+      overflow: auto;
+      padding: 1rem;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 0.85rem;
+      box-shadow: var(--shadow);
+    }
+
+    .toc strong {
+      display: block;
+      margin: 0 0 0.6rem;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .toc ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .toc li + li {
+      margin-top: 0.12rem;
+    }
+
+    .toc a {
+      display: block;
+      padding: 0.34rem 0.45rem;
+      color: var(--ink);
+      border-radius: 0.35rem;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+
+    .toc a:hover {
+      color: var(--brand-dark);
+      background: var(--surface-alt);
+    }
+
+    main {
+      min-width: 0;
+    }
+
+    section {
+      scroll-margin-top: 1.5rem;
+      padding: 1.7rem clamp(1rem, 3vw, 2rem);
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 0.9rem;
+      box-shadow: var(--shadow);
+    }
+
+    section + section {
+      margin-top: 1.2rem;
+    }
+
+    h2,
+    h3 {
+      line-height: 1.2;
+      letter-spacing: -0.022em;
+    }
+
+    h2 {
+      margin: 0 0 0.95rem;
+      font-size: clamp(1.55rem, 3.4vw, 2.15rem);
+    }
+
+    h3 {
+      margin: 1.7rem 0 0.55rem;
+      font-size: 1.18rem;
+    }
+
+    h2 + h3 {
+      margin-top: 1.15rem;
+    }
+
+    p {
+      margin: 0.65rem 0;
+    }
+
+    ul,
+    ol {
+      padding-left: 1.35rem;
+    }
+
+    li + li {
+      margin-top: 0.35rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.8rem;
+      margin-top: 1rem;
+    }
+
+    .card {
+      padding: 1rem;
+      background: var(--surface-alt);
+      border: 1px solid var(--line);
+      border-radius: 0.7rem;
+    }
+
+    .card h3 {
+      margin: 0;
+      font-size: 1rem;
+    }
+
+    .card p {
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    .callout {
+      margin: 1rem 0;
+      padding: 0.85rem 1rem;
+      background: var(--info-bg);
+      border: 1px solid var(--info-line);
+      border-left-width: 0.34rem;
+      border-radius: 0.5rem;
+    }
+
+    .callout.warning {
+      background: var(--warning-bg);
+      border-color: var(--warning-line);
+    }
+
+    .callout strong {
+      display: block;
+      margin-bottom: 0.15rem;
+    }
+
+    code,
+    kbd {
+      font-family: "Cascadia Code", "SFMono-Regular", Consolas, monospace;
+      font-size: 0.9em;
+    }
+
+    :not(pre) > code,
+    kbd {
+      padding: 0.12rem 0.35rem;
+      color: var(--ink);
+      background: var(--surface-alt);
+      border: 1px solid var(--line);
+      border-radius: 0.3rem;
+    }
+
+    kbd {
+      white-space: nowrap;
+      box-shadow: 0 1px 0 var(--line);
+    }
+
+    pre {
+      max-width: 100%;
+      overflow: auto;
+      margin: 0.85rem 0 1.1rem;
+      padding: 1rem;
+      color: var(--code-ink);
+      background: var(--code);
+      border-radius: 0.65rem;
+      line-height: 1.5;
+      tab-size: 2;
+    }
+
+    pre code {
+      font-size: 0.83rem;
+    }
+
+    table {
+      width: 100%;
+      margin: 1rem 0;
+      border-collapse: collapse;
+      font-size: 0.94rem;
+    }
+
+    th,
+    td {
+      padding: 0.65rem 0.7rem;
+      border: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--surface-alt);
+    }
+
+    details {
+      margin-top: 0.75rem;
+      padding: 0.7rem 0.85rem;
+      background: var(--surface-alt);
+      border: 1px solid var(--line);
+      border-radius: 0.5rem;
+    }
+
+    summary {
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .fine-print {
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    footer {
+      padding: 2rem 1rem 3.5rem;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    @media (max-width: 850px) {
+      .page {
+        grid-template-columns: 1fr;
+      }
+
+      .toc {
+        position: static;
+        max-height: none;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .hero-inner {
+        padding: 2.7rem 0 2.3rem;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      section {
+        border-radius: 0.65rem;
+      }
+
+      table {
+        display: block;
+        overflow-x: auto;
+      }
+    }
+
+    @media print {
+      :root {
+        --ink: #000;
+        --muted: #333;
+        --paper: #fff;
+        --surface: #fff;
+        --surface-alt: #f3f3f3;
+        --line: #aaa;
+        --brand-dark: #3a226d;
+      }
+
+      body {
+        font-size: 10pt;
+      }
+
+      .hero {
+        color: #000;
+        background: #fff;
+        border-bottom: 2px solid #000;
+      }
+
+      .lede,
+      .badge {
+        color: #000;
+      }
+
+      .badge {
+        background: #fff;
+        border-color: #777;
+      }
+
+      .page {
+        display: block;
+        width: 100%;
+      }
+
+      .toc {
+        position: static;
+        margin-bottom: 1rem;
+        box-shadow: none;
+      }
+
+      section {
+        break-inside: avoid;
+        box-shadow: none;
+      }
+
+      pre {
+        white-space: pre-wrap;
+      }
+    }
+  
+    /* Static colors keep examples readable offline. */
+    pre .syntax-keyword { color: #f2b6e3; }
+    pre .syntax-type, pre .syntax-key { color: #a9d6ff; }
+    pre .syntax-string { color: #b9e2b0; }
+    pre .syntax-number { color: #e6c793; }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to the guide</a>
+
+  <header class="hero">
+    <div class="hero-inner">
+      <p class="eyebrow">FunByDefault user guide</p>
+      <h1>Dialogue</h1>
+      <p class="lede">Build branching conversations with a hierarchical asset editor, Blueprint-ready runtime control, persistent speaker state, conditional choices, optional camera framing, and a native fallback UI.</p>
+      <div class="version-row" aria-label="Documented release scope">
+        <span class="badge">Version 1.0 candidate</span>
+        <span class="badge">Compatibility verification in progress</span>
+        <span class="badge">Win64</span>
+        <span class="badge">Runtime + Editor source</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="page">
+    <nav class="toc" aria-label="Guide contents">
+      <strong>Contents</strong>
+      <ul>
+        <li><a href="#overview">Overview</a></li>
+        <li><a href="#support">Support matrix</a></li>
+        <li><a href="#install">Install and enable</a></li>
+        <li><a href="#quick-start">Editor and Blueprint quickstart</a></li>
+        <li><a href="#authoring">Author dialogue trees</a></li>
+        <li><a href="#building-blocks">Assets and components</a></li>
+        <li><a href="#integration">Blueprint and C++</a></li>
+        <li><a href="#camera">Camera and facing</a></li>
+        <li><a href="#state">State and saving</a></li>
+        <li><a href="#json">JSON import</a></li>
+        <li><a href="#packaging">Package your game</a></li>
+        <li><a href="#limitations">Known limitations</a></li>
+        <li><a href="#troubleshooting">Troubleshooting</a></li>
+        <li><a href="#upgrading">Upgrade and migration</a></li>
+        <li><a href="#privacy">Privacy and support</a></li>
+      </ul>
+    </nav>
+
+    <main id="main">
+      <section id="quick-start">
+        <h2>Editor and Blueprint quickstart</h2>
+        <p><strong>Prerequisites:</strong> Install Dialogue through the Epic Games Launcher for your supported engine version, enable it in <strong>Edit → Plugins</strong>, and restart the editor. Use a Blueprint project with a player Pawn and an NPC Actor.</p>
+        <ol>
+          <li>In the Content Browser, choose <strong>Add → Miscellaneous → Data Asset</strong>, select <strong>Dialogue Tree</strong>, and name your conversation asset.</li>
+          <li>Double-click the asset to open the Dialogue Editor. Author a root line and at least one option; set that option's <strong>Action</strong> to <strong>End</strong> for a simple exit. Save the asset.</li>
+          <li>Open your NPC Actor Blueprint, add a <strong>Dialogue Speaker</strong> component, assign the asset to <strong>Default Dialogue</strong>, and set a stable <strong>Speaker ID</strong>, such as <code>VillageGuide</code>. Add a Dialogue Speaker component to your player Pawn Blueprint and set its Speaker ID to <code>Player</code>.</li>
+          <li>Choose <strong>Per Player</strong> or <strong>Shared</strong> in <strong>Project Settings → Plugins → Dialogue State → Default Progress Mode</strong>. Per Player is the default. To choose differently for one NPC, enable <strong>Override Progress Mode</strong> on its speaker component, then select <strong>Per Player</strong> or <strong>Shared</strong> in <strong>Progress Mode</strong>.</li>
+          <li>Add exactly one <strong>Dialogue Participant</strong> component to your Player Controller Blueprint. In your Game Mode Blueprint, set <strong>Player Controller Class</strong> to it and <strong>Default Pawn Class</strong> to your player Pawn. Select that Game Mode in <strong>Project Settings → Maps &amp; Modes → Default GameMode</strong>; check that your level's <strong>World Settings → GameMode Override</strong> uses it or is <strong>None</strong>.</li>
+          <li>For a network game, enable <strong>Replicates</strong> on the NPC and player Pawn actors. Keep <strong>Component Replicates</strong> enabled on both Dialogue Speaker components and on the controller's Dialogue Participant. These settings share the required actor and component information between server and players.</li>
+          <li>In your local player's interaction event, use <strong>Create Widget</strong> with the <strong>Dialogue Window Widget</strong> class and your owning Player Controller. Use <strong>Add to Player Screen</strong>.</li>
+          <li>Get the <strong>Dialogue Subsystem</strong> from the Game Instance, then call <strong>Start Dialogue Between Speakers For Player</strong>. Connect the NPC's speaker to <strong>Target Speaker</strong>. From the same owning Player Controller, use <strong>Get Controlled Pawn</strong>, then <strong>Get Component by Class</strong> with <strong>Dialogue Speaker</strong> as the class, and connect it to <strong>Instigator Speaker</strong>. Connect that controller and the widget to the remaining inputs.</li>
+          <li>Check the returned Boolean. On failure, remove the widget and check the participants, controller, and tree asset before trying again. For a network game, use <strong>Get Session For Player</strong> and bind <strong>On Request Status Changed</strong> before starting; a true return means queued, and <strong>Accepted</strong> confirms the server started the conversation.</li>
+          <li>Play your own level and trigger the interaction. Choose your response and check that the window closes. Save and reopen the project to verify your assignments persist.</li>
+        </ol>
+        <p><strong>Expected result:</strong> Your interaction opens a dialogue window showing the authored line and response. Choosing the response ends the conversation and returns control to your game.</p>
+        <p>Connect this event to your project's own Input Action or interaction system. Optional source compilation and C++ integration are covered in the advanced reference.</p>
+      </section>
+
+      <section id="overview">
+        <h2>Overview</h2>
+        <p>Dialogue is a self-contained Unreal Engine code plugin for authoring and playing hierarchical conversations. A conversation is stored in a <code>UDialogueTree</code> data asset. Each node chooses a speaker, presents dialogue text, and exposes player options. Options can continue into nested nodes, go back, restart, end the conversation, or jump to an authored node ID.</p>
+
+        <div class="grid">
+          <article class="card">
+            <h3>Purpose-built tree editor</h3>
+            <p>Navigate a compact node-and-option hierarchy, edit the selection in a Details panel, and import a supported JSON subset.</p>
+          </article>
+          <article class="card">
+            <h3>Runtime subsystem</h3>
+            <p>Start and close dialogue, select visible options, read the current node, and subscribe to node, option, and event delegates.</p>
+          </article>
+          <article class="card">
+            <h3>Stateful choices</h3>
+            <p>Filter options with tag, stat, and counter requirements; apply effects; and consume non-repeatable choices.</p>
+          </article>
+          <article class="card">
+            <h3>Presentation helpers</h3>
+            <p>Use the native widget immediately or provide your own UI. Optional camera and facing components frame active speakers.</p>
+          </article>
+        </div>
+
+        <p>The runtime and editor are separate modules. Your packaged game uses the <code>Dialogue</code> runtime module; authoring tools live in <code>DialogueEditor</code> and are not required at runtime.</p>
+      </section>
+
+      <section id="support">
+        <h2>Supported release scope</h2>
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Area</th>
+              <th scope="col">Documented scope</th>
+              <th scope="col">What that means</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Engine baseline</th>
+              <td>Unreal Engine 5.4–5.8 target</td>
+              <td>Release support requires separate build, play, and package validation for each engine. The current candidate is not yet certified.</td>
+            </tr>
+            <tr>
+              <th scope="row">Platform</th>
+              <td>Win64</td>
+              <td>Both the runtime and editor modules declare Win64 in their platform allow lists.</td>
+            </tr>
+            <tr>
+              <th scope="row">Distribution</th>
+              <td>Full C++ source</td>
+              <td>Fab installs engine-matched binaries and supplies the native source for optional advanced development.</td>
+            </tr>
+            <tr>
+              <th scope="row">Project types</th>
+              <td>Blueprint and C++ projects</td>
+              <td>Use the installed plugin for editor and Blueprint setup. Compiling an optional source installation requires Unreal's supported compiler toolchain.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="callout">
+          <strong>Evidence boundary</strong>
+          The descriptor values define this guide's compatibility scope. Build and functional verification belong to the exact release archive's release record. Do not infer support for other engine versions, operating systems, consoles, or mobile targets from this document.
+        </div>
+      </section>
+
+      <section id="install">
+        <h2>Install and enable</h2>
+        <ol>
+          <li>Install Dialogue for your supported Unreal Engine version through the Epic Games Launcher.</li>
+          <li>Open your Blueprint project. In <strong>Edit → Plugins</strong>, find <strong>Dialogue</strong> under Gameplay, enable it, and restart when prompted.</li>
+          <li>In the Content Browser settings, enable <strong>Show Plugin Content</strong> to see the example and plugin assets.</li>
+        </ol>
+
+        <div class="callout warning">
+          <strong>Use the installed plugin</strong>
+          Required setup and integration use editor controls and Blueprint nodes. The included source is for optional advanced development. This guide belongs on GitHub and is not included in the customer plugin ZIP.
+        </div>
+      </section>
+
+<section id="authoring">
+        <h2>Author dialogue trees</h2>
+        <h3>Create or open a tree</h3>
+        <ol>
+          <li>Create a Data Asset whose class is <strong>Dialogue Tree</strong>, or duplicate the supplied example tree.</li>
+          <li>Double-click the asset to open the Dialogue Tree Editor. You can also open <strong>Window → Dialogue Editor</strong>; opening a saved asset is preferable when authoring production content.</li>
+          <li>Select a node or option in the left hierarchy. Edit its reflected properties in the Details panel.</li>
+          <li>Use <strong>Add Option</strong>, <strong>Add Sibling</strong>, and <strong>Delete Option</strong> from the toolbar or context menu to shape the tree.</li>
+          <li>Save the asset and test every reachable path in Play In Editor.</li>
+        </ol>
+
+        <h3 id="editor-settings">Editor appearance settings</h3>
+        <p>Open <strong>Edit → Project Settings → Plugins → Dialogue Editor</strong> to customize the hierarchy's <strong>Node Text Color</strong> and <strong>Option Text Color</strong>. These settings correspond to <code>UDialogueEditorSettings::NodeTextColor</code> and <code>OptionTextColor</code>; they affect editor tree-row text only and do not change runtime dialogue UI colors.</p>
+
+        <h3>Flow actions</h3>
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Action</th>
+              <th scope="col">Result</th>
+              <th scope="col">Authoring note</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row"><code>Next</code></th>
+              <td>Enters the option's nested <code>NextNode</code>.</td>
+              <td>The nested child is the normal hierarchical path.</td>
+            </tr>
+            <tr>
+              <th scope="row"><code>Back</code></th>
+              <td>Returns to the previously visited node, or closes if no previous node exists.</td>
+              <td>The stack records runtime traversal, not editor parentage alone.</td>
+            </tr>
+            <tr>
+              <th scope="row"><code>Start</code></th>
+              <td>Returns to the tree's root and clears traversal history.</td>
+              <td>Useful for hub-style conversations.</td>
+            </tr>
+            <tr>
+              <th scope="row"><code>NodeId</code></th>
+              <td>Jumps to a node whose authored <code>NodeId</code> matches <code>JumpNodeId</code>.</td>
+              <td>Node IDs must be non-empty and unique inside the tree.</td>
+            </tr>
+            <tr>
+              <th scope="row"><code>End</code></th>
+              <td>Closes the conversation and restores input, view target, and facing policy.</td>
+              <td>No child node is used.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Requirements, effects, and events</h3>
+        <p>Options can require tags, compare float stats, or compare integer counters. Combine multiple requirements with <strong>All (AND)</strong> or <strong>Any (OR)</strong>. Options hidden by requirements are omitted from the visible index list, so always pass the index shown by <code>GetCurrentNode().Options</code> back to <code>SelectOption</code>.</p>
+        <p>Node entry effects and option effects can add or remove tags, set or add stats, and set or add counters. Event tags authored on nodes and options are broadcast through <code>OnDialogueEventTriggered</code>; notification effects can use the same delegate after applying their state change.</p>
+
+        <div class="callout">
+          <strong>Stable identity matters</strong>
+          Node and option GUIDs support save-related behavior such as consumed non-repeatable choices. Let the editor generate them, keep assets under source control, and avoid rebuilding released trees in ways that arbitrarily replace those identifiers.
+        </div>
+      </section>
+
+      <section id="building-blocks">
+        <h2>Assets and components</h2>
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Type</th>
+              <th scope="col">Role</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row"><code>UDialogueTree</code></th>
+              <td>Primary data asset containing a <code>TreeId</code> and hierarchical root node.</td>
+            </tr>
+            <tr>
+              <th scope="row"><code>UDialogueSpeakerData</code></th>
+              <td>Optional reusable speaker identity: ID, display name, gender value, and portrait.</td>
+            </tr>
+            <tr>
+              <th scope="row"><code>UDialogueSpeakerComponent</code></th>
+              <td>Add to each participant. Holds the default/current tree, speaker data and tag, focus tags, facing settings, and persistent state.</td>
+            </tr>
+            <tr>
+              <th scope="row"><code>UDialogueCameraComponent</code></th>
+              <td>Optional per-actor dialogue camera with enter/exit blend and aim-easing settings.</td>
+            </tr>
+            <tr>
+              <th scope="row"><code>UDialogueSubsystem</code></th>
+              <td>Finds each local player's session. Its older unscoped actions and delegates address the first local player.</td>
+            </tr>
+            <tr>
+              <th scope="row"><code>UDialogueLocalSession</code></th>
+              <td>One local player's conversation, UI, input, camera, audio, and presentation delegates.</td>
+            </tr>
+            <tr>
+              <th scope="row"><code>UDialogueParticipantComponent</code></th>
+              <td>Player Controller component that routes network requests and stores authoritative per-player progress.</td>
+            </tr>
+            <tr>
+              <th scope="row"><code>UDialogueWindowWidget</code></th>
+              <td>Native fallback UI that creates its own widget tree, displays the current speaker and line, and creates selectable option widgets.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Speaker setup</h3>
+        <ol>
+          <li>Add a <strong>Dialogue Speaker</strong> component to the player or interacting pawn and to each conversational actor.</li>
+          <li>On the target actor, assign <strong>Default Dialogue</strong>. Optionally assign a Speaker Data asset for a friendly display name and portrait data.</li>
+          <li>Set a stable <strong>Speaker ID</strong>. Each NPC or <code>ByTag</code> speaker needs a unique ID in its world; each player's own Pawn may use <code>Player</code>. Reuse an NPC's ID when respawning it so saved progress resolves to the same speaker.</li>
+          <li>The target NPC chooses the conversation's progress mode. Use the project <strong>Default Progress Mode</strong>, or enable <strong>Override Progress Mode</strong> and select <strong>Progress Mode</strong> on its speaker. A running conversation keeps the mode it started with.</li>
+          <li>Use a unique <strong>Speaker Tag</strong> when nodes or state operations resolve a participant with <code>ByTag</code>.</li>
+          <li>If camera framing is wanted, add and place a Dialogue Camera component on the actor that supplies that view.</li>
+          <li>If a specific component should define face/camera focus, add a Component Tag to that scene component and add the same name to <strong>Focus Component Tags</strong>. Otherwise actor bounds provide the focus point.</li>
+        </ol>
+
+        <h3>Custom UI</h3>
+        <p>The start call requires a non-null <code>UUserWidget</code>. Choose <strong>Dialogue Window Widget</strong> in Blueprint's Create Widget node for the included interface. For a custom interface, use <strong>Get Session For Player</strong> with the owning Player Controller, bind that session's <strong>On Dialogue Node Changed</strong>, render the supplied node view, and call the same session's <strong>Select Option</strong> with the selected visible index. Use <strong>Add to Player Screen</strong> and handle closure in your own widget lifecycle.</p>
+        <p>The included window wraps long dialogue lines in a scroll area separate from the response list. Use its scrollbar or pointer wheel. With focus on the window or a response button, <strong>Page Down</strong> or the gamepad's <strong>Right Shoulder</strong> reads further down; <strong>Page Up</strong> or <strong>Left Shoulder</strong> returns to earlier text. Changing nodes starts the text at the top.</p>
+        <p>These built-in keys read the owning player's text while that conversation is active; they do not choose a response. If you replace the native body with a custom layout, provide suitable scrolling and controls so all text remains reachable.</p>
+      </section>
+
+      <section id="integration">
+        <h2>Blueprint and C++ integration</h2>
+        <h3>Blueprint orientation</h3>
+        <ol>
+          <li>Get the <strong>Dialogue Subsystem</strong> from the Game Instance.</li>
+          <li>Use <strong>Get Session For Player</strong> with the owning Player Controller. Bind that session's <strong>On Dialogue Node Changed</strong> and <strong>On Request Status Changed</strong>.</li>
+          <li>Create your dialogue widget with the same owning Player Controller and use <strong>Add to Player Screen</strong>.</li>
+          <li>Call <strong>Start Dialogue Between Speakers For Player</strong> with the target and instigator Dialogue Speaker components, widget, owning Player Controller, and the input mode to apply after close.</li>
+          <li>In a network game, a true start result means the request was queued. Wait for <strong>Accepted</strong> before treating the conversation as active. Use the request status message to explain denials such as another player using a Shared speaker or being out of range.</li>
+          <li>Call the owning session's <strong>Select Option</strong> with a visible option index, or let the included widget handle selection.</li>
+          <li>Call that session's <strong>Close Dialogue</strong> for cancellation. Check its <strong>Is Dialogue Active</strong> and <strong>Is Request Pending</strong> when managing interaction state.</li>
+        </ol>
+
+        <h3>Optional advanced C++ start</h3>
+        <pre><code class="language-cpp">#include <span class="syntax-string">"DialogueSubsystem.h"</span>
+#include <span class="syntax-string">"DialogueSpeakerComponent.h"</span>
+#include <span class="syntax-string">"UI/DialogueWindowWidget.h"</span>
+#include <span class="syntax-string">"Engine/GameInstance.h"</span>
+#include <span class="syntax-string">"GameFramework/PlayerController.h"</span>
+
+<span class="syntax-keyword">bool</span> StartConversation(
+    <span class="syntax-type">APlayerController</span>* PlayerController,
+    <span class="syntax-type">UDialogueSpeakerComponent</span>* Target,
+    <span class="syntax-type">UDialogueSpeakerComponent</span>* Instigator)
+{
+    <span class="syntax-keyword">if</span> (!PlayerController || !Target || !Instigator)
+    {
+        <span class="syntax-keyword">return</span> <span class="syntax-keyword">false</span>;
+    }
+
+    <span class="syntax-type">UGameInstance</span>* GameInstance = PlayerController-&gt;GetGameInstance();
+    <span class="syntax-type">UDialogueSubsystem</span>* Dialogue =
+        GameInstance ? GameInstance-&gt;GetSubsystem&lt;<span class="syntax-type">UDialogueSubsystem</span>&gt;() : <span class="syntax-keyword">nullptr</span>;
+    <span class="syntax-keyword">if</span> (!Dialogue)
+    {
+        <span class="syntax-keyword">return</span> <span class="syntax-keyword">false</span>;
+    }
+
+    <span class="syntax-type">UDialogueWindowWidget</span>* Window =
+        CreateWidget&lt;<span class="syntax-type">UDialogueWindowWidget</span>&gt;(PlayerController);
+    <span class="syntax-keyword">if</span> (!Window)
+    {
+        <span class="syntax-keyword">return</span> <span class="syntax-keyword">false</span>;
+    }
+
+    Window-&gt;AddToPlayerScreen();
+    <span class="syntax-keyword">const</span> <span class="syntax-keyword">bool</span> bStarted = Dialogue-&gt;StartDialogueBetweenSpeakersForPlayer(
+        Target,
+        Instigator,
+        Window,
+        PlayerController,
+        <span class="syntax-type">EDialogueInputModeAfterClose</span>::GameOnly);
+    <span class="syntax-keyword">if</span> (!bStarted)
+    {
+        Window-&gt;RemoveFromParent();
+    }
+    <span class="syntax-keyword">return</span> bStarted;
+}</code></pre>
+
+        <h3>Runtime reference</h3>
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Node or function</th>
+              <th scope="col">Use</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row"><code>StartDialogueBetweenSpeakersForPlayer</code></th>
+              <td>Starts the explicit controller's session. A network start can return true while waiting for server acceptance. A split-screen close reports the requested input mode through the session delegate for your project to apply.</td>
+            </tr>
+            <tr>
+              <th scope="row"><code>StartDialogueBetweenSpeakers</code></th>
+              <td>Compatibility overload. Resolves the instigator pawn's controller first and falls back to player zero. Returns false when a required participant, widget, controller, or usable target tree is missing.</td>
+            </tr>
+            <tr>
+              <th scope="row"><code>GetCurrentNode</code></th>
+              <td>Returns a non-recursive view whose options are already filtered for availability.</td>
+            </tr>
+            <tr>
+              <th scope="row"><code>SelectOption</code></th>
+              <td>Chooses by visible index. In a network game, true means the request was queued. The server checks its current offer and requirements before applying consumption, effects, events, and flow.</td>
+            </tr>
+            <tr>
+              <th scope="row"><code>GetCurrentSpeakerComponent</code></th>
+              <td>Resolves the participant speaking the current line.</td>
+            </tr>
+            <tr>
+              <th scope="row"><code>CloseDialogue</code></th>
+              <td>Stops active audio and helpers, hides the widget, and restores gameplay input/camera state.</td>
+            </tr>
+            <tr>
+              <th scope="row"><code>UDialogueWindowWidget::Update</code></th>
+              <td>Refreshes the window from its owning local session; normal node changes already refresh it automatically.</td>
+            </tr>
+            <tr>
+              <th scope="row"><code>UDialogueSpeakerComponent::GetCurrentDialogue</code> / <code>SetCurrentDialogue</code></th>
+              <td>Read or change the tree for the next Shared conversation. The getter falls back to <code>DefaultDialogue</code>. Per Player conversations use that default or the participant's saved override.</td>
+            </tr>
+            <tr>
+              <th scope="row"><code>FindDialogueCamera</code>, <code>GetFocusLocation</code>, <code>GetSpeakerDisplayName</code></th>
+              <td>Access the speaker's first Dialogue Camera, tagged-component or actor-bounds focus point, and Speaker Data display name with the documented actor-name fallback.</td>
+            </tr>
+            <tr>
+              <th scope="row"><code>UDialogueTree::GetRootNode</code></th>
+              <td>Returns the authored root node for Blueprint or C++ inspection. Runtime progress should stay in speaker persistent state rather than mutating the shared tree asset.</td>
+            </tr>
+            <tr>
+              <th scope="row"><code>OnDialogueNodeChanged</code></th>
+              <td>Refresh custom UI or respond to a new line.</td>
+            </tr>
+            <tr>
+              <th scope="row"><code>OnDialogueOptionChosen</code></th>
+              <td>Observe the selected option after acceptance. Network notifications contain its GUID, text, and flow action for presentation; authored requirements, effects, and child nodes stay on the server.</td>
+            </tr>
+            <tr>
+              <th scope="row"><code>OnDialogueEventTriggered</code></th>
+              <td>Local presentation notification for audio, animation, or messages. In a network game, run quests and other gameplay changes from the Participant component's server-only <code>OnAuthorityEvent</code> and <code>OnAuthorityStatChanged</code> delegates.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>For C++ modules consuming the plugin, add <code>"Dialogue"</code> to the appropriate dependency list in your module's <code>.Build.cs</code>. Keep <code>"DialogueEditor"</code> restricted to editor-only modules or targets.</p>
+
+        <h3>Network setup</h3>
+        <p>Add exactly one <strong>Dialogue Participant</strong> component to the Player Controller Blueprint used by the active Game Mode. The server receives requests through that player's controller and uses its possessed Pawn as the instigator. Use <strong>Get Controlled Pawn</strong> from the owning controller to find that Pawn's speaker; do not pass another player's Pawn. Enable actor <strong>Replicates</strong> on NPCs, player Pawns, and speakers addressed by tag. Keep <strong>Component Replicates</strong> enabled on their Dialogue Speakers and the controller's Dialogue Participant, including Blueprint-derived replacements. Assign the same cooked Dialogue Tree assets to the server and clients.</p>
+        <p>For placed NPCs, enter a unique <strong>Speaker ID</strong> on each speaker component. For Blueprint-spawned NPCs, expose an ID variable on spawn and call <strong>Set Stable Speaker ID</strong> on the server before the first interaction. The speaker component replicates that ID with its actor. IDs must be nonempty and use at most 128 UTF-16 code units; most ordinary letters use one unit. They cannot change through this node after progress begins. Keep saved IDs stable across loads; give different persistent NPCs different IDs.</p>
+        <p>Set <strong>Max Interaction Distance</strong> on each target speaker in centimeters; the default is 500 cm. The server checks this distance at start and while the conversation runs.</p>
+        <p>For game-specific restrictions, create a <strong>Blueprint Class</strong>, open <strong>All Classes</strong>, and select <strong>Dialogue Participant</strong> as its parent. Override <strong>Can Start Dialogue</strong> and <strong>Can Continue Dialogue</strong> in that component Blueprint; the server calls these checks. In your Player Controller Blueprint, replace the plain Dialogue Participant component with this component Blueprint. Keep exactly one participant component and leave <strong>Component Replicates</strong> enabled.</p>
+        <p>The server runs requirements and effects. Only the owning player receives the conversation view, choice tokens, notifications, and relevant progress. Other players' screens, camera, audio, and controls stay independent. Bind server gameplay to the Participant's authority delegates and local feedback to the owning session's presentation delegates. Hosting, matchmaking, accounts, and durable saves belong to your game.</p>
+      </section>
+
+      <section id="camera">
+        <h2>Camera and facing behavior</h2>
+        <p>Camera framing and actor facing are optional runtime helpers. They activate only while dialogue needs them and restore their captured gameplay state when the conversation closes.</p>
+
+        <h3>Dialogue camera</h3>
+        <ul>
+          <li>Add a <code>UDialogueCameraComponent</code> to the actor that should provide a dialogue point of view.</li>
+          <li>Place and rotate it like a regular Camera component. Configure enter/exit blend times and functions on the component.</li>
+          <li>When <strong>Aim At Other Speaker</strong> is enabled, the temporary rig follows the source camera's position and smoothly aims at the other speaker's focus location.</li>
+          <li>If no usable Dialogue Camera exists, the dialogue can still run; design your normal camera behavior accordingly.</li>
+        </ul>
+
+        <h3>Speaker facing</h3>
+        <ul>
+          <li><strong>Turn Towards Other Speaker</strong> is controlled per speaker. Disable it for actors that must retain authored rotation.</li>
+          <li><strong>Turn Ease Duration</strong> controls response time; zero snaps. <strong>Ease Exp</strong> shapes the settle.</li>
+          <li>For Characters, the helper temporarily adjusts movement/controller-yaw policy and restores the saved policy on close.</li>
+          <li>Per Player mode leaves the shared NPC's facing unchanged so simultaneous conversations cannot fight over its rotation. In networked Shared mode, the server can turn the NPC when its movement replicates; it does not turn a player-controlled Pawn.</li>
+          <li>Always test with your movement, root-motion, animation, and controller stack. Systems that continuously write actor rotation can compete with dialogue facing.</li>
+        </ul>
+
+        <div class="callout warning">
+          <strong>Close every exit path</strong>
+          Use <code>CloseDialogue</code> for cancellation, level-transition preparation, or custom teardown. The subsystem also cleans up during deinitialization, but explicit closure gives your UI and gameplay state a predictable lifecycle.
+        </div>
+      </section>
+
+      <section id="state">
+        <h2>Dialogue state and save restoration</h2>
+        <p>Choose <strong>Default Progress Mode</strong> in <strong>Project Settings → Plugins → Dialogue State</strong>. To override it for an NPC, enable <strong>Override Progress Mode</strong> and select <strong>Progress Mode</strong> on the target's speaker component:</p>
+        <ul>
+          <li><strong>Per Player:</strong> each Dialogue Participant keeps its own record for each Speaker ID. Two players can use the same NPC concurrently. One player's consumed choices, tags, stats, counters, and future dialogue do not change the other's record.</li>
+          <li><strong>Shared:</strong> everyone uses the speaker component's <strong>Persistent State</strong>. Only one conversation can use that target at a time. A competing network start receives <strong>Busy</strong>; a competing standalone start returns false. Show the rejection through <strong>On Request Status Changed</strong> in network UI. After the first conversation closes, try a new start request.</li>
+        </ul>
+        <p>The server reads the target's mode when a conversation starts and uses it for all speakers in that conversation. A running conversation keeps that mode; a later start uses the new setting. Per-player records start from the speaker's initial state on first use. Importing saved progress takes precedence. Changing the mode does not merge or copy existing records between modes. Both modes use <code>FDialogueSpeakerPersistentState</code>, which contains:</p>
+        <ul>
+          <li><code>Stats</code>: named float values.</li>
+          <li><code>Counters</code>: named integer values.</li>
+          <li><code>Tags</code>: named boolean-like flags.</li>
+          <li><code>ConsumedOptionGuids</code>: identities of selected non-repeatable options.</li>
+          <li><code>CurrentDialogueOverride</code>: an optional soft reference to the tree used on future interactions.</li>
+        </ul>
+
+        <p>The <code>UDialogueStateBlueprintLibrary</code> provides Has/Add/Remove Tag, Get/Set/Add Stat, Get/Set/Add Counter, option consumption, and Clear All operations on a state struct. In a network game, edit the speaker's <strong>Persistent State</strong> on the server to change Shared progress. Editing a client's copy does not update the server. To change saved Per Player records outside a conversation, export them on the server, edit their state structs, and import them again.</p>
+        <p>Stat writes accept only finite values and additions saturate at the finite float range; counter additions saturate at the 32-bit integer bounds instead of wrapping. Runtime dialogue effects apply the same safety before an optional definition-table clamp. Configure stat and counter definition DataTables under <strong>Project Settings → Plugins → Dialogue State</strong>; row names identify values and can supply defaults, clamping, and stat-change messages.</p>
+        <p>Referenced stat rows need finite defaults. When clamping is enabled, stat bounds must be finite and both stat and counter bounds must have a minimum no greater than the maximum. A conversation rejects invalid definitions before applying effects. Table edits made during a callback take effect on the next conversation operation.</p>
+
+        <h3>Saving</h3>
+        <ol>
+          <li>Create a Blueprint derived from <strong>SaveGame</strong>. For Per Player progress, add a variable named <code>DialogueProgress</code>, set its type to <strong>Dialogue Speaker Progress Record</strong>, and change it to an <strong>Array</strong>. For Shared progress, add speaker-state variables keyed by stable speaker IDs.</li>
+          <li>For <strong>Shared</strong> progress, save each relevant speaker component's <strong>Persistent State</strong>. Restore it on the server, then call <strong>Apply Persistent Dialogue Override</strong> if the component has already begun play.</li>
+          <li>For <strong>Per Player</strong> progress, on the server call <strong>Export Progress</strong> on that player's Dialogue Participant. Connect the returned array to <strong>Set DialogueProgress</strong> on your SaveGame object, then use your game's <strong>Save Game to Slot</strong> flow for that player.</li>
+          <li>After <strong>Load Game from Slot</strong>, cast the loaded object to your SaveGame Blueprint. On the server, connect its <strong>DialogueProgress</strong> array to <strong>Import Progress</strong> on the participant belonging to the same player. Use a <strong>Branch</strong> on the returned Boolean: start dialogue only after a successful restore, and handle failure in your save flow. Import is rejected while that participant has an active conversation or state provider.</li>
+          <li>Resolve versioning in your save model when renaming stat IDs, counter IDs, tag IDs, speaker IDs, tree assets, or released dialogue options.</li>
+        </ol>
+
+        <p><strong>Import replaces all records:</strong> a valid array replaces the participant's Per Player records together, so include every record you want to keep. A valid empty array clears them. A false return leaves the previous records unchanged. Each record needs a unique, nonempty Speaker ID within the 128-unit limit and valid state values; follow the <a href="#limitations">state size limits</a> when editing saves.</p>
+
+        <div class="callout warning">
+          <strong>Persistence is deliberately project-owned</strong>
+          Your game selects and writes SaveGame slots and maps player accounts to saved records. Per-player records do not automatically survive controller replacement, reconnect, or travel. Export and restore them through your game's server lifecycle. Shared progress lasts for the speaker component's lifetime unless your game saves and restores it.
+        </div>
+      </section>
+
+      <section id="json">
+        <h2>Hierarchical JSON import</h2>
+        <p>The Dialogue Tree Editor can import from a file or pasted text. In the asset editor's File menu, choose <strong>Import Dialogue JSON…</strong> or <strong>Paste Dialogue JSON…</strong>, then either create a new asset or overwrite the selected tree.</p>
+
+        <div class="callout warning">
+          <strong>Overwrite replaces authored tree content</strong>
+          Duplicate or commit the asset before importing over it. Import is not a merge operation.
+        </div>
+
+        <h3 id="scripted-json-import">Scripted editor import</h3>
+        <p>Editor Utility Blueprints and editor-only C++ tools can call <code>UDialogueEditorBlueprintLibrary::ImportJsonFileToDialogueTree</code> for a UTF-8 file or <code>ImportJsonTextToDialogueTree</code> for an in-memory string. Both functions require an existing <code>UDialogueTree</code>; they do not open a save dialog or create an asset.</p>
+        <ul>
+          <li>A <code>true</code> return replaces the tree's imported fields and entire root hierarchy in memory. <code>TreeId</code> changes only when the JSON supplies it. The package is marked dirty; your editor tool must save the asset or package.</li>
+          <li>A <code>false</code> return leaves an actionable explanation in <code>OutError</code>. Report that text to the user and do not save the failed import; keep the asset backed up before any overwrite workflow.</li>
+          <li>The library belongs to the <code>DialogueEditor</code> module. Use it only from editor targets or editor-only Blueprint tooling; do not add <code>DialogueEditor</code> to a runtime or Shipping dependency.</li>
+        </ul>
+
+        <h3>Supported core schema</h3>
+        <ul>
+          <li>The document root contains optional <code>TreeId</code> and required object <code>RootNode</code>.</li>
+          <li>A node can contain <code>NodeId</code>, <code>Speaker</code>, <code>SpeakerTag</code> when using <code>ByTag</code>, <code>DialogueText</code>, and <code>Options</code>.</li>
+          <li>An option can contain <code>OptionText</code>, <code>Action</code>, <code>bIsRepeatable</code>, nested object <code>Next</code> for the <code>Next</code> action, and <code>JumpNodeId</code> for the <code>NodeId</code> action.</li>
+          <li>Optional state and event fields are also supported: <code>NodeEventTags</code>, <code>EntryEffects</code>, <code>RequirementLogic</code>, <code>Requirements</code>, <code>Effects</code>, and <code>OptionEventTags</code>.</li>
+          <li>Speaker values are <code>Target</code>, <code>Instigator</code>, or <code>ByTag</code>. Action values are <code>Next</code>, <code>Back</code>, <code>End</code>, <code>Start</code>, or <code>NodeId</code>.</li>
+          <li>A jump only references a node; it does not declare one. Every jump target must exist somewhere in the nested <code>Next</code> hierarchy and have a unique <code>NodeId</code>.</li>
+        </ul>
+
+        <pre><code class="language-json">{
+  <span class="syntax-key">"TreeId"</span>: <span class="syntax-string">"ShopkeeperIntro"</span>,
+  <span class="syntax-key">"RootNode"</span>: {
+    <span class="syntax-key">"NodeId"</span>: <span class="syntax-string">"Start"</span>,
+    <span class="syntax-key">"Speaker"</span>: <span class="syntax-string">"Target"</span>,
+    <span class="syntax-key">"DialogueText"</span>: <span class="syntax-string">"Welcome, traveler. What can I do for you?"</span>,
+    <span class="syntax-key">"Options"</span>: [
+      {
+        <span class="syntax-key">"OptionText"</span>: <span class="syntax-string">"What do you sell?"</span>,
+        <span class="syntax-key">"Action"</span>: <span class="syntax-string">"Next"</span>,
+        <span class="syntax-key">"bIsRepeatable"</span>: <span class="syntax-keyword">true</span>,
+        <span class="syntax-key">"Next"</span>: {
+          <span class="syntax-key">"NodeId"</span>: <span class="syntax-string">"Stock"</span>,
+          <span class="syntax-key">"Speaker"</span>: <span class="syntax-string">"Target"</span>,
+          <span class="syntax-key">"DialogueText"</span>: <span class="syntax-string">"Tools, maps, and a few unusual trinkets."</span>,
+          <span class="syntax-key">"Options"</span>: [
+            {
+              <span class="syntax-key">"OptionText"</span>: <span class="syntax-string">"Return to the greeting."</span>,
+              <span class="syntax-key">"Action"</span>: <span class="syntax-string">"Start"</span>
+            },
+            {
+              <span class="syntax-key">"OptionText"</span>: <span class="syntax-string">"Goodbye."</span>,
+              <span class="syntax-key">"Action"</span>: <span class="syntax-string">"End"</span>
+            }
+          ]
+        }
+      },
+      {
+        <span class="syntax-key">"OptionText"</span>: <span class="syntax-string">"Take me straight to your stock."</span>,
+        <span class="syntax-key">"Action"</span>: <span class="syntax-string">"NodeId"</span>,
+        <span class="syntax-key">"JumpNodeId"</span>: <span class="syntax-string">"Stock"</span>
+      },
+      {
+        <span class="syntax-key">"OptionText"</span>: <span class="syntax-string">"Maybe later."</span>,
+        <span class="syntax-key">"Action"</span>: <span class="syntax-string">"End"</span>
+      }
+    ]
+  }
+}</code></pre>
+
+        <h3>Optional state and event objects</h3>
+        <p>Requirements use <code>Type</code> (<code>HasTag</code>, <code>MissingTag</code>, <code>StatCompare</code>, or <code>CounterCompare</code>), <code>Target</code> (<code>Target</code>, <code>Instigator</code>, or <code>ByTag</code>), and the fields needed by that type: <code>TargetSpeakerTag</code>, <code>TagId</code>, <code>StatId</code>, <code>CounterId</code>, <code>CompareOp</code>, <code>StatValue</code>, or <code>CounterValue</code>. Set the option's <code>RequirementLogic</code> to <code>All</code>/<code>And</code> or <code>Any</code>/<code>Or</code>.</p>
+        <p>Effects use <code>Type</code> (<code>AddTag</code>, <code>RemoveTag</code>, <code>SetStat</code>, <code>AddStat</code>, <code>SetCounter</code>, or <code>AddCounter</code>), plus the corresponding target, ID, and value fields. They can also contain <code>bNotifyUI</code> and <code>NotifyTag</code>. Put effects in a node's <code>EntryEffects</code> array or an option's <code>Effects</code> array. <code>NodeEventTags</code> and <code>OptionEventTags</code> are arrays of strings.</p>
+
+        <h3>Importer boundaries</h3>
+        <p>The importer does not resolve content asset paths or reproduce every reflected property. After import, use the Details panel to assign voice assets, future-dialogue asset references, and any presentation data. Speaker Data assets and project-wide stat/counter definition tables are configured separately. Treat JSON as an authoring interchange for the supported hierarchy and state/event fields, not as a lossless export or general Unreal asset-serialization format.</p>
+        <p>Known schema fields are type-checked before the destination tree is replaced. A failed parse or validation leaves the existing tree fields and root hierarchy unchanged. To bound editor memory and recursion, imports accept files up to 8 MiB, in-memory text up to 8,388,608 characters, JSON nesting up to 256 levels, dialogue hierarchies up to 64 nodes deep and 10,000 total nodes, up to 256 options on one node, and up to 1,024 entries in each event-tag, requirement, or effect array. Split content into multiple Dialogue Trees if a source exceeds those authoring limits.</p>
+        <p>JSON fields stored as names, such as <code>TreeId</code>, <code>NodeId</code>, <code>JumpNodeId</code>, speaker tags, state IDs, and event tags, accept at most 1,023 UTF-16 code units. Most ordinary letters use one unit; some Unicode characters use two. Embedded NUL characters, including JSON <code>\u0000</code>, are rejected. Network conversations use a tighter 128-unit limit for their identifiers, and imported assets must meet the separate <a href="#limitations">network limits</a> before they can run online.</p>
+        <p><code>StatValue</code> must be a finite 32-bit floating-point value. <code>CounterValue</code> must be a whole 32-bit integer; fractional, out-of-range, or non-finite numeric values are rejected with an error instead of being rounded or wrapped.</p>
+        <p>The legacy flat format with a top-level <code>dialogues</code> array and string <code>next</code> references is not this schema. Convert it to a required <code>RootNode</code> with nested <code>Next</code> objects and explicit <code>Action</code> values before importing.</p>
+      </section>
+
+      <section id="packaging">
+        <h2>Package your game</h2>
+        <ol>
+          <li>Keep Dialogue enabled in <strong>Edit → Plugins</strong> for the target project.</li>
+          <li>Reference required Dialogue assets through normal hard or soft asset references. Do not rely on an editor window having loaded them.</li>
+          <li>Cook and package for your verified engine version using the editor's packaging workflow.</li>
+          <li>Run a Development package first and exercise starting, every flow action, save restoration, custom UI input, camera exit, and map transitions.</li>
+          <li>Run the same smoke path in Shipping. Confirm your own input, SaveGame, localization, audio, and networking policies.</li>
+        </ol>
+
+        <p>The editor module should not be added to a shipping runtime dependency. Plugin content cooks when referenced, but your project's asset-management and chunking rules still apply. If you dynamically load trees only by constructed strings, add an explicit cooking rule or primary-asset policy and test the packaged build.</p>
+      </section>
+
+      <section id="limitations">
+        <h2>Known limitations and design boundaries</h2>
+        <ul>
+          <li><strong>Candidate scope:</strong> Win64 is the current release target. Engine, packaged-runtime, device, and multiplayer acceptance checks remain in progress; the public support table must be finalized from their results.</li>
+          <li><strong>Local-player model:</strong> each local player has a separate session. Use <strong>Get Session For Player</strong> for actions and delegates; unscoped subsystem actions and delegates address the first local player. Split-screen closure requests an input mode through <strong>On Input Mode After Close Requested</strong>; your project decides any viewport-wide input policy.</li>
+          <li><strong>Network candidate:</strong> listen-server and dedicated-server acceptance remains in progress. The implementation routes requests to the server and sends the relevant conversation view and progress to its owner. Do not treat an unexecuted mode as verified support.</li>
+          <li><strong>Save storage:</strong> persistent state is a serializable data structure, not an automatic SaveGame service.</li>
+          <li><strong>Input:</strong> the native window exposes clickable/tappable choices and a Close button while the Slate input preprocessor handles keyboard/gamepad navigation and cancel. The example supplies raw defaults for mouse/keyboard, gamepad, and touch; production projects should replace the interaction bindings and integrate their own remapping, accessibility, multiplayer ownership, or CommonUI behavior explicitly.</li>
+          <li><strong>JSON:</strong> import covers the documented hierarchical subset and is not a lossless round trip for every asset property.</li>
+          <li><strong>Localization:</strong> text imported from plain JSON is created from strings. Review your localization pipeline and stable text identity requirements before using JSON as the authoritative source for localized production dialogue.</li>
+          <li><strong>Runtime tree mutation:</strong> tree assets are intended as authored content. Put mutable progress in speaker persistent state instead of modifying shared data assets during play.</li>
+          <li><strong>Network presentation:</strong> one active conversation per participant; Shared mode also allows one conversation per target. Each view accepts at most 32 choices, 4,096 characters in a line, 512 characters per choice, and 8,192 presentation characters in total. A conservative 48 KiB payload estimate also includes full text histories, identifiers, notifications, and progress; unusually large formatted or localized text can exceed it even within the character limits.</li>
+          <li><strong>Network progress:</strong> a tree can reference at most 16 speakers and 256 potential progress entries in total, including entries its effects can create. Each saved speaker record accepts 128 stats, 128 counters, 128 tags, and 256 consumed options, with 512 entries total; a participant accepts 1,024 records. Nodes accept 64 entry effects; options accept 64 requirements and 64 effects. Each node and each option accepts eight event notifications, including effect notifications. Network trees accept 4,096 reachable nodes. Split oversized text into shorter nodes. A tree-wide progress limit requires reducing or separating its state usage.</li>
+          <li><strong>Request timing:</strong> the server accepts ten requests per second with an initial burst of twenty. An active conversation expires after sixty seconds without an accepted interaction. Your UI should handle rate-limit rejection and closure.</li>
+        </ul>
+      </section>
+
+      <section id="troubleshooting">
+        <h2>Troubleshooting</h2>
+
+        <details open>
+          <summary>The plugin does not appear in Edit → Plugins</summary>
+          <p>Check that the path ends in <code>Plugins/Dialogue/Dialogue.uplugin</code>, not <code>Plugins/Dialogue/Dialogue/Dialogue.uplugin</code>. Confirm that the complete plugin was copied and restart the editor.</p>
+        </details>
+
+        <details>
+          <summary>The project will not compile after installation</summary>
+          <p>Confirm that you installed Dialogue for the same supported engine version as your project. Reinstall the matching plugin through the Epic Games Launcher and restart the editor. For an optional source-based installation, use that engine's supported native toolchain; never delete Source or Content.</p>
+        </details>
+
+        <details>
+          <summary>I cannot find the example map or assets</summary>
+          <p>Enable <strong>Show Plugin Content</strong> in the Content Browser and find Dialogue's Example folder. Reinstall the matching plugin if its content is absent.</p>
+        </details>
+
+        <details>
+          <summary>Start Dialogue Between Speakers returns false</summary>
+          <p>Verify that target, instigator, and widget are all non-null; both actors use Dialogue Speaker components; the target has a current or default Dialogue Tree; and that tree has a root node. Check the Output Log for an actionable Dialogue warning.</p>
+        </details>
+
+        <details>
+          <summary>An option does not appear</summary>
+          <p>Inspect its requirements against the targeted speaker state. For a non-repeatable option, check whether its GUID is already in <code>ConsumedOptionGuids</code>. Remember that <code>GetCurrentNode</code> exposes only visible options.</p>
+        </details>
+
+        <details>
+          <summary>A Node ID jump closes the conversation</summary>
+          <p>Make sure <code>JumpNodeId</code> exactly matches one unique, non-empty <code>NodeId</code> in a node reachable through the tree's nested hierarchy. Duplicate IDs are invalid authoring and a missing destination cannot be traversed.</p>
+        </details>
+
+        <details>
+          <summary>The dialogue UI shows but keyboard, gamepad, mouse, or touch input is wrong</summary>
+          <p>First test with the included native window widget. For custom UI, create it with the correct owning Player Controller, use Add to Player Screen, focusable buttons, and an explicit close control. Check competing input preprocessors and project touch/navigation settings. Put pause or menu input above the Dialogue State setting's Modal Input Priority, which defaults to 100. Route interaction through your own input system; the raw example bindings belong to the harness.</p>
+        </details>
+
+        <details>
+          <summary>The camera does not frame a speaker</summary>
+          <p>Add a Dialogue Camera component to the relevant actor and confirm its transform. Check <strong>Aim At Other Speaker</strong> and focus tags. Without a Dialogue Camera, the runtime leaves presentation to the project's normal camera.</p>
+        </details>
+
+        <details>
+          <summary>An actor keeps fighting dialogue-facing rotation</summary>
+          <p>Animation, root motion, movement code, controller code, or another Tick may be writing rotation concurrently. Disable <strong>Turn Towards Other Speaker</strong> for that participant or coordinate ownership in project code. Always call <code>CloseDialogue</code> during custom teardown.</p>
+        </details>
+
+        <details>
+          <summary>Saved choices or a dialogue override did not return</summary>
+          <p>Check which progress mode the target uses. Shared mode restores the speaker's Persistent State; Per Player mode restores Export Progress records through the player's server-side Dialogue Participant. Use the same stable Speaker IDs and check Import Progress's result. Restore before starting a conversation.</p>
+        </details>
+
+        <details>
+          <summary>JSON import fails or produces a different tree</summary>
+          <p>Validate the JSON syntax and exact field names. The root must contain an object named <code>RootNode</code>. Use nested <code>Next</code> objects rather than a flat node array. Asset references such as voice sounds and future Dialogue Tree overrides are intentionally not resolved from JSON; assign those references in the editor after import.</p>
+        </details>
+      </section>
+
+      <section id="upgrading">
+        <h2>Upgrade and migration</h2>
+        <ol>
+          <li>Commit or back up your project, Dialogue assets, JSON sources, and SaveGame migration code.</li>
+          <li>Close Unreal Editor and your IDE.</li>
+          <li>Update the plugin for your supported engine through the Epic Games Launcher. For an optional source installation, replace the folder as a unit and keep generated output from different engines separate.</li>
+          <li>Reopen your project and restart if the editor requests it. Recompilation is needed only for an optional source-based installation.</li>
+          <li>Open representative released Dialogue Trees and resave only after reviewing the editor result.</li>
+          <li>Test old SaveGame data, especially consumed option GUIDs and soft tree overrides, before shipping the upgrade.</li>
+          <li>Retest custom widget focus, event-tag consumers, camera/facing teardown, packaged dynamic asset loads, and every JSON import pipeline.</li>
+        </ol>
+
+        <h3>Schema and identity changes</h3>
+        <p>Older hierarchical Dialogue Tree assets that serialized <code>bIsEnd</code> or <code>NextNodeId</code> options are migrated to the current <code>Action</code>/<code>JumpNodeId</code> representation when loaded. Missing persistent node and option GUIDs are repaired deterministically. Review and resave those assets in the editor before packaging so the migrated data is stored in source control.</p>
+        <p>The earlier flat JSON format is not converted automatically. Convert it to the hierarchical schema before import. Preserve released asset paths, Tree IDs, Node IDs, and GUID-bearing tree data whenever code or saves depend on them. Migrate saved data when renaming a tag, stat, counter, speaker, or jump ID.</p>
+
+        <div class="callout warning">
+          <strong>Do not test upgrades only with new saves</strong>
+          Keep representative pre-upgrade saves and dialogue assets in a private regression fixture. A clean new game cannot reveal broken consumed options, renamed IDs, or missing dialogue overrides.
+        </div>
+      </section>
+
+      <section id="privacy">
+        <h2>Privacy, telemetry, and support</h2>
+        <p>Dialogue contains no telemetry, analytics reporting, account service, advertising, or tracking pixel. In a network game, it uses your game's Unreal connection to send the owning player the current conversation text, choices, notifications, and relevant progress. It does not operate an external service. Your game controls hosting, accounts, storage, and platform connections.</p>
+        <p><strong>Support:</strong> <a href="https://github.com/funbydefault/dialogue-docs/issues">report a Dialogue issue</a>. Include the plugin version, engine version, target platform, reproduction steps, relevant Dialogue log lines, and whether the issue occurs in the included example map. Remove personal information and private game content before posting logs.</p>
+        <p class="fine-print">This HTML file is self-contained and works offline. It loads no fonts, scripts, images, analytics, or other network resources.</p>
+      </section>
+    </main>
+  </div>
+
+  <footer>
+    Dialogue 1.0 · FunByDefault · Documentation publication candidate
+  </footer>
+</body>
+</html>

@@ -729,7 +729,18 @@
         </ol>
 
         <h3>Custom UI</h3>
-        <p>The start call requires a non-null <code>UUserWidget</code>. Choose <strong>Dialogue Window Widget</strong> in Blueprint's Create Widget node for the included interface. For a custom interface, use <strong>Get Session For Player</strong> with the owning Player Controller, bind that session's <strong>On Dialogue Node Changed</strong>, render the supplied node view, and call the same session's <strong>Select Option</strong> with the selected visible index. Use <strong>Add to Player Screen</strong> and handle closure in your own widget lifecycle.</p>
+        <p>The start call requires a widget. Choose <strong>Dialogue Window Widget</strong> in <strong>Create Widget</strong> for the included interface. For your own interface, create the widget with the owning Player Controller and use <strong>Add to Player Screen</strong>.</p>
+        <p>Use <strong>Get Session For Player</strong> with that controller. Bind the session's <strong>On Dialogue Node Changed</strong> and display its <code>NewNode</code>. Each response button's <strong>On Clicked</strong> calls the same session's <strong>Select Option</strong> with its index in <code>NewNode.Options</code>. Give Close its own <strong>Close Dialogue</strong> callback.</p>
+        <h4>Arrows and gamepad in your layout</h4>
+        <ol>
+          <li>Inside <strong>On Dialogue Node Changed</strong>, call <strong>Get Node View Revision</strong> on the same session first. Keep that number with <code>NewNode</code>, before starting any delayed widget creation.</li>
+          <li>Create one response button per <code>NewNode.Options</code> entry. Put them in a <code>Buttons</code> array in that exact order, including disabled, hidden or pointer-only buttons. Keep Close and menu controls out of the array.</li>
+          <li>Call <strong>Set Option Focus Buttons</strong> on the same session with <code>Buttons</code> and the captured <code>NodeViewRevision</code>. Every button must be inside the current dialogue widget and belong to the same player.</li>
+          <li>Branch on the return value. <strong>True</strong> accepts the mapping. <strong>False</strong> keeps the current mapping unchanged. Discard stale delayed work; check the button count, duplicates and owning widget before registering the current view.</li>
+        </ol>
+        <p>Automatic focus skips unavailable or nonfocusable buttons while keeping their response indices. A pointer-only button can still use its <strong>On Clicked</strong> callback. Register again for each new node or replacement widget; closing expires the mapping.</p>
+        <p>To clear the mapping, pass an empty array with the current view's captured revision. An old revision, including an old clear request, returns false and leaves a newer mapping alone. This number identifies one displayed local view.</p>
+        <h4>Reading long lines</h4>
         <p>The included window wraps long dialogue lines in a scroll area separate from the response list. Use its scrollbar or pointer wheel. With focus on the window or a response button, <strong>Page Down</strong> or the gamepad's <strong>Right Shoulder</strong> reads further down; <strong>Page Up</strong> or <strong>Left Shoulder</strong> returns to earlier text. Changing nodes starts the text at the top.</p>
         <p>These built-in keys read the owning player's text while that conversation is active; they do not choose a response. If you replace the native body with a custom layout, provide suitable scrolling and controls so all text remains reachable.</p>
       </section>
@@ -813,6 +824,14 @@
             <tr>
               <th scope="row"><code>GetCurrentNode</code></th>
               <td>Returns a non-recursive view whose options are already filtered for availability.</td>
+            </tr>
+            <tr>
+              <th scope="row"><code>GetNodeViewRevision</code></th>
+              <td>Inside <code>OnDialogueNodeChanged</code>, returns the identity of the view that triggered the callback, even if an earlier listener closed or replaced it. Capture it with <code>NewNode</code> before delayed rendering; <code>SetOptionFocusButtons</code> rejects registrations for old views. Outside that callback, identifies the current active valid view or returns zero when there is none.</td>
+            </tr>
+            <tr>
+              <th scope="row"><code>SetOptionFocusButtons</code></th>
+              <td>Registers response buttons in the displayed option order for automatic focus. Check its Boolean result. An empty array clears only the supplied current view; a rejected call preserves the current mapping.</td>
             </tr>
             <tr>
               <th scope="row"><code>SelectOption</code></th>
